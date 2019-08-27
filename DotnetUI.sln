@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetUI", "DotnetUI\DotnetUI.csproj", "{AE2794AA-7128-4618-A7AF-8BC7C321C3C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetUI.tests", "DotnetUI.tests\DotnetUI.tests.csproj", "{20993D63-11FF-46CE-AD12-4E331EB4F802}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE2794AA-7128-4618-A7AF-8BC7C321C3C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE2794AA-7128-4618-A7AF-8BC7C321C3C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE2794AA-7128-4618-A7AF-8BC7C321C3C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE2794AA-7128-4618-A7AF-8BC7C321C3C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20993D63-11FF-46CE-AD12-4E331EB4F802}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20993D63-11FF-46CE-AD12-4E331EB4F802}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20993D63-11FF-46CE-AD12-4E331EB4F802}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20993D63-11FF-46CE-AD12-4E331EB4F802}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E24424C2-5849-43C4-B516-B965E1AC6A99}
+	EndGlobalSection
+EndGlobal
