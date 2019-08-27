@@ -1,30 +1,26 @@
+using DotnetUI.Core;
 using System;
 
 namespace DotnetUI
 {
     public struct DivComponentProps : DefaultComponentProps
     {
-        public ReactElement[] Children { get; set; }
+        public Blueprint[] Children { get; set; }
         public string Style { get; set; }
     }
-    public class DivComponent : ReactComponent<DivComponentProps>
+    public class DivComponent : PlatformSpecificComponent<DivComponentProps>
     {
         public DivComponent(
             DivComponentProps props
         ): base(props) {
         }
-
-        public override ReactElement Render()
-        {
-            throw new NotImplementedException();
-        }
     }
 
-    //public class DivElement : ReactElement
+    //public class DivElement : Blueprint
     //{
     //    public readonly new DivComponentProps Props;
     //    public readonly string Tag = "div";
-    //    public DivElement(Type reactComponentType, object props) : base(reactComponentType, props)
+    //    public DivElement(Type ComponentType, object props) : base(ComponentType, props)
     //    {
     //        Props = (DivComponentProps)props;
     //    }

@@ -20,7 +20,7 @@ namespace DotnetUI.tests
     [TestClass]
     public class RoslynTest
     {
-        [TestMethod]
+        //[TestMethod]
         public void TestRoslyn()
         {
 

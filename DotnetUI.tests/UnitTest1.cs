@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DotnetUI.Core;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,22 +17,24 @@ namespace DotnetUI.tests
             //   <div style="2"></div>
             // </div>
 
-            var rootElement = React.CreateElement<DivComponent, DivComponentProps>(new DivComponentProps
+            var rootBlueprint = Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
             {
                 Style = "1",
                 Children = new[]
                 {
-                    React.CreateElement<DivComponent, DivComponentProps>(new DivComponentProps
+                    Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
                     {
                         Style = "2"
                     }),
                 },
             });
 
-            var html = ReactDom.ToHtml(rootElement);
+            var document = new TestHtmlDocument();
+            var renderer = new DomRenderer(document);
+            var htmlElement = renderer.Mount(rootBlueprint);
 
             var expected = "<div style=\"1\"><div style=\"2\"></div></div>";
-            Assert.AreEqual(html, expected);
+            Assert.AreEqual(htmlElement.ToString(), expected);
         }
 
         [TestMethod]
@@ -45,22 +48,25 @@ namespace DotnetUI.tests
             //   <div style="2"></div>
             // </div>
 
-            var rootElement = React.CreateElement<MyComponent, MyComponentProps>(new MyComponentProps
+            var rootBlueprint = Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps
             {
                 Style = "1",
                 Children = new[]
                 {
-                    React.CreateElement<MyComponent, MyComponentProps>(new MyComponentProps
+                    Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps
                     {
                         Style = "2"
                     }),
                 },
             });
 
-            var html = ReactDom.ToHtml(rootElement);
+
+            var document = new TestHtmlDocument();
+            var renderer = new DomRenderer(document);
+            var htmlElement = renderer.Mount(rootBlueprint);
 
             var expected = "<div style=\"1\"><div style=\"2\"></div></div>";
-            Assert.AreEqual(html, expected);
+            Assert.AreEqual(htmlElement.ToString(), expected);
         }
     }
 }
