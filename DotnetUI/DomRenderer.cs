@@ -1,47 +1,40 @@
 using DotnetUI.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DotnetUI
 {
-    public class RenderTreeNode
+    public class DomRenderer: IUpdater
     {
-        public readonly Component ComponentInstance;
-        public readonly Blueprint Blueprint;
-        public RenderTreeNode Next;
-    }
-    public class DomRenderer
-    {
-        private static Dictionary<Type, string> ComponentTagDictionary = new Dictionary<Type, string>
-        {
-            [typeof(DivComponent)] = "div",
-        };
-
         private readonly IHtmlDocument Document;
+        private readonly Dictionary<Component, RenderNode> ComponentRenderNodeMap = new Dictionary<Component, RenderNode>();
 
         public DomRenderer(IHtmlDocument document)
         {
             Document = document;
         }
 
-        public IHtmlElement Mount(Blueprint blueprint)
+        public RenderNode Mount(Blueprint blueprint)
         {
             return IsPlatformSpecificComponent(blueprint)
                 ? MountPlatformSpecificComponent(blueprint)
                 : MountUserDefinedComponent(blueprint);
         }
 
-        private IHtmlElement MountPlatformSpecificComponent(Blueprint blueprint)
+        private RenderNode MountPlatformSpecificComponent(Blueprint blueprint)
         {
+            var componentInstance = Instanticate(blueprint);
+            var renderNode = new RenderNode(blueprint, componentInstance);
+            ComponentRenderNodeMap[componentInstance] = renderNode;
+
             if (blueprint.ComponentType == typeof(DivComponent))
             {
-                return MountDivComponent(blueprint);
+                return MountDivComponent(blueprint, renderNode);
             }
             throw new NotImplementedException();
         }
 
-        private IHtmlElement MountDivComponent(Blueprint blueprint)
+        private RenderNode MountDivComponent(Blueprint blueprint, RenderNode renderNode)
         {
             var tag = "div";
 
@@ -58,24 +51,39 @@ namespace DotnetUI
             {
                 foreach (var child in props.Children)
                 {
-                    var childElement = Mount(child);
-                    element.AppendChild(childElement);
+                    var childNode = Mount(child);
+                    renderNode.Children.Add(childNode);
+                    element.AppendChild((IHtmlElement)childNode.RootElement);
                 }
             }
-            
-            return element;
+
+            renderNode.Element = element;
+
+            return renderNode;
         }
 
-        private IHtmlElement MountUserDefinedComponent(Blueprint blueprint)
+        private RenderNode MountUserDefinedComponent(Blueprint blueprint)
         {
             var componentInstance = Instanticate(blueprint);
+
+            var renderNode = new RenderNode(blueprint, componentInstance);
+            ComponentRenderNodeMap[componentInstance] = renderNode;
+
             // TODO : call componentInstance.ComponentDidMount()
             var nextBlueprint = componentInstance.Render();
-            return Mount(nextBlueprint);
+            var nextRenderNode = Mount(nextBlueprint);
+
+            renderNode.Children.Add(nextRenderNode);
+            return renderNode;
         }
-        private static Component Instanticate(Blueprint blueprint)
+        private Component Instanticate(Blueprint blueprint)
         {
-            return (Component)Activator.CreateInstance(blueprint.ComponentType, blueprint.Props);
+            var component = (Component) Activator
+                .CreateInstance(blueprint.ComponentType, blueprint.Props);
+
+            component.Updater = this;
+
+            return component;
         }
 
         private static bool IsPlatformSpecificComponent(Blueprint blueprint)
@@ -85,6 +93,19 @@ namespace DotnetUI
                 return true;
             }
             return false;
+        }
+
+        public void CommitUpdate(Component component)
+        {
+            var renderNode = ComponentRenderNodeMap[component];
+
+            var nextBlueprint = renderNode.Component.Render();
+
+            renderNode.Children.Clear();
+
+            var nextRenderNode = Mount(nextBlueprint);
+
+            renderNode.Children.Add(nextRenderNode);
         }
     }
 }

@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 using DotnetUI.Core;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DotnetUI.tests
@@ -31,7 +29,7 @@ namespace DotnetUI.tests
 
             var document = new TestHtmlDocument();
             var renderer = new DomRenderer(document);
-            var htmlElement = renderer.Mount(rootBlueprint);
+            var htmlElement = renderer.Mount(rootBlueprint).RootElement;
 
             var expected = "<div style=\"1\"><div style=\"2\"></div></div>";
             Assert.AreEqual(htmlElement.ToString(), expected);
@@ -51,11 +49,13 @@ namespace DotnetUI.tests
             var rootBlueprint = Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps
             {
                 Style = "1",
+                Id = "first",
                 Children = new[]
                 {
                     Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps
                     {
-                        Style = "2"
+                        Style = "2",
+                        Id = "second",
                     }),
                 },
             });
@@ -63,10 +63,15 @@ namespace DotnetUI.tests
 
             var document = new TestHtmlDocument();
             var renderer = new DomRenderer(document);
-            var htmlElement = renderer.Mount(rootBlueprint);
+            var renderNode = renderer.Mount(rootBlueprint);
 
             var expected = "<div style=\"1\"><div style=\"2\"></div></div>";
-            Assert.AreEqual(htmlElement.ToString(), expected);
+            Assert.AreEqual(renderNode.RootElement.ToString(), expected);
+
+            MyComponent.Click("first");
+
+            expected = "<div style=\"1 clicked\"><div style=\"2\"></div></div>";
+            Assert.AreEqual(renderNode.RootElement.ToString(), expected);
         }
     }
 }

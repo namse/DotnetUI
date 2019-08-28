@@ -4,11 +4,17 @@ namespace DotnetUI.Core
     {
 
     }
+
+    public interface IPlatformSpecificComponent
+    {
+    }
+
     public abstract class PlatformSpecificComponent<TProps>
-        : Component<TProps>
+        : Component<TProps>, IPlatformSpecificComponent
          where TProps : DefaultComponentProps
     {
-        protected PlatformSpecificComponent(TProps props) : base(props)
+        protected PlatformSpecificComponent(TProps props)
+            : base(props)
         {
         }
 
@@ -33,20 +39,29 @@ namespace DotnetUI.Core
     public abstract class Component
     {
         public readonly DefaultComponentProps Props;
+        public IUpdater Updater;
+
         protected Component(DefaultComponentProps props)
         {
             Props = props;
         }
 
         public abstract Blueprint Render();
+        
+        protected void CommitState()
+        {
+            Updater.CommitUpdate(this);
+        }
     }
 
     public abstract class Component<TProps>
         : Component, IComponentWithProps<TProps>
         where TProps : DefaultComponentProps
     {
+        protected new readonly TProps Props;
         protected Component(TProps props) : base(props)
         {
+            Props = props;
         }
     }
 
@@ -55,19 +70,11 @@ namespace DotnetUI.Core
         where TProps : DefaultComponentProps
         where TState : DefaultComponentState
     {
-        protected TProps props;
-        protected TState state;
+        protected abstract TState State { get; set; }
 
         protected Component(TProps props) : base(props)
         {
-            this.props = props;
         }
-
-        protected void CommitState()
-        {
-
-        }
-
     }
 
 }
