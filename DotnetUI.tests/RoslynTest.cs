@@ -14,10 +14,15 @@ namespace DotnetUI.tests
         {
             Console.WriteLine("VisitCsxSelfClosingTagElement");
             Console.WriteLine(node.ToFullString());
-            return SyntaxFactory.ParseExpression($"Blueprint.From<{node.TagName}, {node.TagName}Props>(new {node.TagName}Props {{}})");
 
-            //// 
-            //return base.VisitCsxSelfClosingTagElement(node);
+            var propsString = "";
+            if (node.Attributes != default)
+            {
+                propsString = string.Join(',', node.Attributes
+                    .Select(attribute => $"{attribute.Key}={attribute.Value}"));
+            }
+
+            return SyntaxFactory.ParseExpression($"Blueprint.From<{node.TagName}, {node.TagName}Props>(new {node.TagName}Props {{{propsString}}})");
         }
     }
     [TestClass]
@@ -58,7 +63,7 @@ class C
         }
 
         [TestMethod]
-        public void TestCsxSelfClosingTagElement_Attributes()
+        public void TestCsxSelfClosingTagElement_One_Attribute()
         {
             var csxCodeBlock = @"<MyComponent Id=""abc""/>";
 
@@ -67,9 +72,22 @@ class C
             var rewriter = new CsxRewriter();
             var result = rewriter.Visit(root);
 
-            var expected = GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {
-    Id = ""abc"",
-})");
+            var expected = GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc""})");
+
+            Assert.AreEqual(expected, result.ToFullString());
+        }
+
+        [TestMethod]
+        public void TestCsxSelfClosingTagElement_Multiple_Attributes()
+        {
+            var csxCodeBlock = @"<MyComponent Id=""abc"" ClassName=""clicked""/>";
+
+            var tree = CSharpSyntaxTree.ParseText(GenerateCodeForExpression(csxCodeBlock));
+            var root = (CompilationUnitSyntax)tree.GetRoot();
+            var rewriter = new CsxRewriter();
+            var result = rewriter.Visit(root);
+
+            var expected = GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc"",ClassName=""clicked""})");
 
             Assert.AreEqual(expected, result.ToFullString());
         }

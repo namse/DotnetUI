@@ -38,8 +38,8 @@ namespace DotnetUI.tests
         [TestMethod]
         public void TestMyComponent()
         {
-            // <MyComponent style="1">
-            //   <MyComponent style="2"></MyComponent>
+            // <MyComponent style="1" id="first">
+            //   <MyComponent style="2" id="second"></MyComponent>
             // </MyComponent>
 
             // <div style="1">
