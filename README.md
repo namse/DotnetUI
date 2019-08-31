@@ -17,4 +17,4 @@ Simply saying, it's React in C#. React use jsx. DotnetUI use csx. CSX file is CS
     - [ ] C# Expression Attribute `<tag att={@"hello {name}"} />`
 - [ ] Create compile tool from csx to wasm
   - [ ] .csx => .cs
-  - [ ] .csx => .wasm (using mono)
+  - [ ] .cs => .wasm (using mono)
