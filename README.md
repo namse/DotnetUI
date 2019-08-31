@@ -7,14 +7,14 @@ Simply saying, it's React in C#. React use jsx. DotnetUI use csx. CSX file is CS
 - [ ] Implement Component Managing System like React
   - No Reconcilation for prototype! Just redraw everything on changes.
 - [ ] Implement Csx Compiler (https://github.com/namse/roslyn-csx)
-  - [x] Self Closing Tag Element (<tag />)
-  - [ ] Open And Close Tag Element (<tag></tag>)
-  - [ ] Parse Children (<tag>{{here}}</tag>)
-    - [ ] Xml Children (<tag><tag></tag></tag>)
-    - [ ] Text Children (<tag>hi</tag>)
+  - [x] Self Closing Tag Element `<tag />`
+  - [ ] Open And Close Tag Element `<tag></tag>`
+  - [ ] Parse Children `<tag>{{here}}</tag>`
+    - [ ] Xml Children `<tag><tag></tag></tag>`
+    - [ ] Text Children `<tag>hi</tag>`
   - [ ] Attributes(Props)
-    - [x] String Attributes <tag att="hello" />
-    - [ ] C# Expression Attribute <tag att={@"hello {name}"} />
+    - [x] String Attributes `<tag att="hello" />`
+    - [ ] C# Expression Attribute `<tag att={@"hello {name}"} />`
 - [ ] Create compile tool from csx to wasm
   - [ ] .csx => .cs
   - [ ] .csx => .wasm (using mono)
