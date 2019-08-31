@@ -20,3 +20,15 @@ Simply saying, it's React in C#. React use jsx. DotnetUI use csx. CSX file is CS
 - [ ] Create compile tool from csx to wasm
   - [ ] .csx => .cs
   - [ ] .cs => .wasm (using mono)
+
+
+# Big Picture
+- Multiplatform
+  - Core
+    - Dotnet Standard
+  - Renderer
+    - Web (wasm)
+    - Game (Unity)
+    - Mobile (Xamarin)
+    - Desktop (Electron, Avalonia, WPF or UWF)
+- Multi Thread Support using Task(async, await)
