@@ -7,38 +7,71 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DotnetUI.tests
 {
-    public class MyRewriter : CSharpSyntaxRewriter
+    public class CsxRewriter : CSharpSyntaxRewriter
     {
-        public MyRewriter() : base(true) { }
+        public CsxRewriter() : base(true) { }
         public override SyntaxNode VisitCsxSelfClosingTagElement(CsxSelfClosingTagElementSyntax node)
         {
             Console.WriteLine("VisitCsxSelfClosingTagElement");
             Console.WriteLine(node.ToFullString());
-            return base.VisitCsxSelfClosingTagElement(node);
+            return SyntaxFactory.ParseExpression($"Blueprint.From<{node.TagName}, {node.TagName}Props>(new {node.TagName}Props {{}})");
+
+            //// 
+            //return base.VisitCsxSelfClosingTagElement(node);
         }
     }
     [TestClass]
     public class RoslynTest
     {
-        //[TestMethod]
-        public void TestRoslyn()
+        public string GenerateCodeForExpression(string expression)
         {
-
-            var div = SyntaxFactory.CsxSelfClosingTagElement("div");
-            Console.WriteLine(div.ToFullString());
-
-     //       var tree = CSharpSyntaxTree.ParseText(div.ToFullString());
-            var tree = CSharpSyntaxTree.ParseText($@"
+            return $@"
 class C
 {{
     void Func() \{{
-        var a = ({div.ToFullString()});
+        var a = ({expression});
     }}
-}}");
-            var root = (CompilationUnitSyntax) tree.GetRoot();
-            var rewriter = new MyRewriter();
+}}";
+        }
+
+        [TestMethod]
+        public void TestCsxSelfClosingTagElementGeneration()
+        {
+            var csxSelfClosingTagElement = SyntaxFactory.CsxSelfClosingTagElement("MyComponent");
+            var csxCodeBlock = @"<MyComponent/>";
+            Assert.AreEqual(csxSelfClosingTagElement.ToFullString(), csxCodeBlock);
+        }
+
+        [TestMethod]
+        public void TestCsxSelfClosingTagElement_NoAttributes()
+        {
+            var csxCodeBlock = @"<MyComponent/>";
+
+            var tree = CSharpSyntaxTree.ParseText(GenerateCodeForExpression(csxCodeBlock));
+            var root = (CompilationUnitSyntax)tree.GetRoot();
+            var rewriter = new CsxRewriter();
             var result = rewriter.Visit(root);
 
+            var expected = GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {})");
+
+            Assert.AreEqual(expected, result.ToFullString());
+        }
+
+        [TestMethod]
+        public void TestCsxSelfClosingTagElement_Attributes()
+        {
+            var csxCodeBlock = @"<MyComponent Id=""abc""/>";
+
+            var tree = CSharpSyntaxTree.ParseText(GenerateCodeForExpression(csxCodeBlock));
+            var root = (CompilationUnitSyntax)tree.GetRoot();
+            var rewriter = new CsxRewriter();
+            var result = rewriter.Visit(root);
+
+            var expected = GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {
+    Id = ""abc"",
+})");
+
+            Assert.AreEqual(expected, result.ToFullString());
         }
     }
 }
