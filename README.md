@@ -3,6 +3,12 @@
 
 Simply saying, it's React in C#. React use jsx. DotnetUI use csx. CSX file is CSharp file but we can use xml syntax like <MyComponent>.
 
+# How to test
+- Use visual studio 2019
+- Build roslyn-csx first
+  - roslyn-csx/build-csx.ps1
+- Run sln and enjoy
+
 # I'm Workig In Process for Prototype
 - [x] Implement Component Managing System like React
   - No Reconcilation for prototype! Just redraw everything on changes.
