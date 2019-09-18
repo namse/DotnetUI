@@ -1,0 +1,3 @@
+[submodule "roslyn-csx"]
+	path = roslyn-csx
+	url = https://github.com/namse/roslyn-csx.git
