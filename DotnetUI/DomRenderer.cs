@@ -6,12 +6,12 @@ namespace DotnetUI
 {
     public class DomRenderer: IUpdater
     {
-        private readonly IHtmlDocument Document;
-        private readonly Dictionary<Component, RenderNode> ComponentRenderNodeMap = new Dictionary<Component, RenderNode>();
+        private readonly IHtmlDocument _document;
+        private readonly Dictionary<Component, RenderNode> _componentRenderNodeMap = new Dictionary<Component, RenderNode>();
 
         public DomRenderer(IHtmlDocument document)
         {
-            Document = document;
+            _document = document;
         }
 
         public RenderNode Mount(Blueprint blueprint)
@@ -25,7 +25,7 @@ namespace DotnetUI
         {
             var componentInstance = Instanticate(blueprint);
             var renderNode = new RenderNode(blueprint, componentInstance);
-            ComponentRenderNodeMap[componentInstance] = renderNode;
+            _componentRenderNodeMap[componentInstance] = renderNode;
 
             if (blueprint.ComponentType == typeof(DivComponent))
             {
@@ -36,15 +36,20 @@ namespace DotnetUI
 
         private RenderNode MountDivComponent(Blueprint blueprint, RenderNode renderNode)
         {
-            var tag = "div";
+            const string tag = "div";
 
-            var element = Document.CreateElement(tag);
+            var element = _document.CreateElement(tag);
 
             var props = (DivComponentProps)blueprint.Props;
 
             if (props.Style != default)
             {
                 element.SetAttribute("style", props.Style);
+            }
+
+            if (props.Id != default)
+            {
+                element.SetAttribute("id", props.Id);
             }
 
             if (!(props.Children is null))
@@ -67,7 +72,7 @@ namespace DotnetUI
             var componentInstance = Instanticate(blueprint);
 
             var renderNode = new RenderNode(blueprint, componentInstance);
-            ComponentRenderNodeMap[componentInstance] = renderNode;
+            _componentRenderNodeMap[componentInstance] = renderNode;
 
             // TODO : call componentInstance.ComponentDidMount()
             var nextBlueprint = componentInstance.Render();
@@ -97,7 +102,7 @@ namespace DotnetUI
 
         public void CommitUpdate(Component component)
         {
-            var renderNode = ComponentRenderNodeMap[component];
+            var renderNode = _componentRenderNodeMap[component];
 
             var nextBlueprint = renderNode.Component.Render();
 

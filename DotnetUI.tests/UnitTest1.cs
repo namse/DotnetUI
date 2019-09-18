@@ -36,7 +36,7 @@ namespace DotnetUI.tests
         }
 
         [TestMethod]
-        public void TestMyComponent()
+        public void TestRedrawOnChangeState()
         {
             // <MyComponent style="1" id="first">
             //   <MyComponent style="2" id="second"></MyComponent>
