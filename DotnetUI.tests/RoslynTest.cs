@@ -10,19 +10,31 @@ namespace DotnetUI.tests
     public class CsxRewriter : CSharpSyntaxRewriter
     {
         public CsxRewriter() : base(true) { }
-        public override SyntaxNode VisitCsxSelfClosingTagElement(CsxSelfClosingTagElementSyntax node)
-        {
-            Console.WriteLine("VisitCsxSelfClosingTagElement");
-            Console.WriteLine(node.ToFullString());
 
+        private SyntaxNode ConvertCsxElementSyntaxToExpression(
+            IdentifierNameSyntax tagName,
+            SyntaxList<CsxStringAttributeSyntax> attributes)
+        {
             var propsString = "";
-            if (node.Attributes != default)
+            if (attributes != default)
             {
-                propsString = string.Join(',', node.Attributes
+                propsString = string.Join(',', attributes
                     .Select(attribute => $"{attribute.Key}={attribute.Value}"));
             }
 
-            return SyntaxFactory.ParseExpression($"Blueprint.From<{node.TagName}, {node.TagName}Props>(new {node.TagName}Props {{{propsString}}})");
+            Console.WriteLine(propsString);
+
+            return SyntaxFactory.ParseExpression($"Blueprint.From<{tagName}, {tagName}Props>(new {tagName}Props {{{propsString}}})");
+        }
+
+        public override SyntaxNode VisitCsxSelfClosingTagElement(CsxSelfClosingTagElementSyntax node)
+        {
+            return ConvertCsxElementSyntaxToExpression(node.TagName, node.Attributes);
+        }
+
+        public override SyntaxNode VisitCsxOpenCloseTagElement(CsxOpenCloseTagElementSyntax node)
+        {
+            return ConvertCsxElementSyntaxToExpression(node.CsxOpenTag.TagName, node.CsxOpenTag.Attributes);
         }
     }
     [TestClass]
@@ -48,9 +60,35 @@ class C
         }
 
         [TestMethod]
+        public void TestCsxOpenCloseTagElementGeneration()
+        {
+            var csxSelfClosingTagElement = SyntaxFactory.CsxOpenCloseTagElement(
+                SyntaxFactory.CsxOpenTagElement("MyComponent"),
+                SyntaxFactory.CsxCloseTagElement("MyComponent"));
+
+            var csxCodeBlock = @"<MyComponent></MyComponent>";
+            Assert.AreEqual(csxSelfClosingTagElement.ToFullString(), csxCodeBlock);
+        }
+
+        [TestMethod]
         public void TestCsxSelfClosingTagElement_NoAttributes()
         {
             var csxCodeBlock = @"<MyComponent/>";
+
+            var tree = CSharpSyntaxTree.ParseText(GenerateCodeForExpression(csxCodeBlock));
+            var root = (CompilationUnitSyntax)tree.GetRoot();
+            var rewriter = new CsxRewriter();
+            var result = rewriter.Visit(root);
+
+            var expected = GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {})");
+
+            Assert.AreEqual(expected, result.ToFullString());
+        }
+
+        [TestMethod]
+        public void TestCsxOpenCloseTagElement_NoAttributes()
+        {
+            var csxCodeBlock = @"<MyComponent></MyComponent>";
 
             var tree = CSharpSyntaxTree.ParseText(GenerateCodeForExpression(csxCodeBlock));
             var root = (CompilationUnitSyntax)tree.GetRoot();
@@ -78,9 +116,39 @@ class C
         }
 
         [TestMethod]
+        public void TestCsxOpenCloseTagElement_One_Attribute()
+        {
+            var csxCodeBlock = @"<MyComponent Id=""abc""></MyComponent>";
+
+            var tree = CSharpSyntaxTree.ParseText(GenerateCodeForExpression(csxCodeBlock));
+            var root = (CompilationUnitSyntax)tree.GetRoot();
+            var rewriter = new CsxRewriter();
+            var result = rewriter.Visit(root);
+
+            var expected = GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc""})");
+
+            Assert.AreEqual(expected, result.ToFullString());
+        }
+
+        [TestMethod]
         public void TestCsxSelfClosingTagElement_Multiple_Attributes()
         {
             var csxCodeBlock = @"<MyComponent Id=""abc"" ClassName=""clicked""/>";
+
+            var tree = CSharpSyntaxTree.ParseText(GenerateCodeForExpression(csxCodeBlock));
+            var root = (CompilationUnitSyntax)tree.GetRoot();
+            var rewriter = new CsxRewriter();
+            var result = rewriter.Visit(root);
+
+            var expected = GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc"",ClassName=""clicked""})");
+
+            Assert.AreEqual(expected, result.ToFullString());
+        }
+
+        [TestMethod]
+        public void TestCsxOpenCloseTagElement_Multiple_Attributes()
+        {
+            var csxCodeBlock = @"<MyComponent Id=""abc"" ClassName=""clicked""></MyComponent>";
 
             var tree = CSharpSyntaxTree.ParseText(GenerateCodeForExpression(csxCodeBlock));
             var root = (CompilationUnitSyntax)tree.GetRoot();
