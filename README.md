@@ -18,7 +18,7 @@ Simply saying, it's React in C#. React use jsx. DotnetUI use csx. CSX file is CS
   - [x] Self Closing Tag Element `<tag />`
   - [x] Open Close Tag Element `<tag></tag>`
   - [ ] Parse Children `<tag>{{here}}</tag>`
-    - [ ] Element Children `<tag><tag></tag></tag>`
+    - [x] Element Children `<tag><tag></tag></tag>`
     - [ ] Text Children `<tag>hi</tag>`
   - [ ] Attributes(Props)
     - [x] String Attributes `<tag att="hello" />`
