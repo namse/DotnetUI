@@ -12,5 +12,11 @@ namespace DotnetUI.Core
             ComponentType = componentType;
             Props = props;
         }
+
+        public static implicit operator Blueprint(string text) =>
+            From<TextComponent, TextComponentProps>(new TextComponentProps
+            {
+                Text = text,
+            });
     }
 }

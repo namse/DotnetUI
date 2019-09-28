@@ -19,9 +19,30 @@ namespace DotnetUI.tests
                     return ConvertCsxTagElementSyntaxToExpression(csxTagElement);
                 case CsxTextNodeSyntax csxTextNode:
                     return ConvertCsxTextNodeToExpression(csxTextNode);
+                case CsxBraceNodeSyntax csxBraceNode:
+                    return ConvertCsxBraceNodeToExpression(csxBraceNode);
                 default:
                     throw new Exception($"Unknown csx node kind {node.Kind()}");
             }
+        }
+
+        private SyntaxNode ConvertCsxBraceNodeToExpression(CsxBraceNodeSyntax csxBraceNode)
+        {
+            var csxRewriter = new CsxRewriter();
+            return csxRewriter.Visit(csxBraceNode.Expression);
+            throw new Exception("STOP RIGHT THERE YOU ARE UNDER ARREST");
+            // Primitive Value
+            // - string
+            // - number
+            // - etc
+
+            // Array of primitive value
+
+            // Component
+
+            // Array ofComponent
+
+            // csxBraceNode.Expression
         }
 
         private SyntaxNode ConvertCsxTextNodeToExpression(CsxTextNodeSyntax csxTextNode)
@@ -48,7 +69,7 @@ namespace DotnetUI.tests
                 var childrenCode = string.Join(",", openCloseTagElement.Children
                     .Select(ConvertCsxNodeSyntaxToExpression));
                 var childrenString =
-                    $"Children=new []{{{childrenCode}}}";
+                    $"Children=new Blueprint[]{{{childrenCode}}}";
 
                 propsStringChunks.Add(childrenString);
             }

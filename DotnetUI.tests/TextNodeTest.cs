@@ -15,7 +15,7 @@ namespace DotnetUI.tests
 
             var rootBlueprint = Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
             {
-                Children = new[]
+                Children=new Blueprint[]
                 {
                     Blueprint.From<TextComponent, TextComponentProps>(new TextComponentProps {Text="abc"}),
                 },

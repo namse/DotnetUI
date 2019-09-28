@@ -18,7 +18,7 @@ namespace DotnetUI.tests
             var rootBlueprint = Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
             {
                 Style = "1",
-                Children = new[]
+                Children=new Blueprint[]
                 {
                     Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
                     {
@@ -50,7 +50,7 @@ namespace DotnetUI.tests
             {
                 Style = "1",
                 Id = "first",
-                Children = new[]
+                Children=new Blueprint[]
                 {
                     Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps
                     {
