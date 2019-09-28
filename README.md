@@ -20,9 +20,10 @@ Simply saying, it's React in C#. React use jsx. DotnetUI use csx. CSX file is CS
   - [ ] Parse Children `<tag>{{here}}</tag>`
     - [x] Element Children `<tag><tag></tag></tag>`
     - [ ] Text Children `<tag>hi</tag>`
+    - [ ] C# Expression Children `<tag>{$"hello {name}"}</tag>`
   - [ ] Attributes(Props)
     - [x] String Attributes `<tag att="hello" />`
-    - [ ] C# Expression Attribute `<tag att={@"hello {name}"} />`
+    - [ ] C# Expression Attribute `<tag att={$"hello {name}"} />`
 - [ ] Create compile tool from csx to wasm
   - [ ] .csx => .cs
   - [ ] .cs => .wasm (using mono)
