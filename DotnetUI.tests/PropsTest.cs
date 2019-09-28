@@ -10,7 +10,7 @@ namespace DotnetUI.tests
     [TestClass]
     public class PropsTest
     {
-        private class PropsChangeTestComponentProps : DefaultComponentProps
+        private class PropsChangeTestComponentProps : IDefaultComponentProps
         {
             public string Id { get; set; }
             public Blueprint[] Children { get; }
@@ -44,19 +44,19 @@ namespace DotnetUI.tests
                 component.CommitState();
             }
 
-            public override Blueprint Render()
+            public override ComponentBlueprint Render()
             {
-                var children = new List<Blueprint>();
+                var children = new List<ComponentBlueprint>();
 
                 for (var i = 0; i < this.State.Length; i += 1)
                 {
-                    children.Add(Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
+                    children.Add(ComponentBlueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
                     {
                         Id = $"{Props.Id}-{i + 1}",
                     }));
                 }
 
-                return Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
+                return ComponentBlueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
                 {
                     Id = Props.Id,
                     Children = children.ToArray(),
@@ -72,7 +72,7 @@ namespace DotnetUI.tests
 
             const string id = "1";
 
-            var rootBlueprint = Blueprint.From<PropsChangeTestComponent, PropsChangeTestComponentProps>(new PropsChangeTestComponentProps
+            var rootBlueprint = ComponentBlueprint.From<PropsChangeTestComponent, PropsChangeTestComponentProps>(new PropsChangeTestComponentProps
             {
                 Id = id,
             });
@@ -82,7 +82,7 @@ namespace DotnetUI.tests
             var renderNode = renderer.Mount(rootBlueprint);
 
             var expected = "<div id=\"1\"></div>";
-            Assert.AreEqual(renderNode.RootNode.ToString(), expected);
+            Assert.AreEqual(renderNode.RootNodes[0].ToString(), expected);
 
             var childrenString = "";
             for (var i = 0; i < 10; i += 1)
@@ -91,7 +91,7 @@ namespace DotnetUI.tests
 
                 childrenString += $"<div id=\"1-{i + 1}\"></div>";
                 expected = $"<div id=\"1\">{childrenString}</div>";
-                Assert.AreEqual(renderNode.RootNode.ToString(), expected);
+                Assert.AreEqual(renderNode.RootNodes[0].ToString(), expected);
             }
         }
     }

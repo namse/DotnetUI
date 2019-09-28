@@ -1,7 +1,9 @@
 using DotnetUI.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace DotnetUI
 {
@@ -9,9 +11,8 @@ namespace DotnetUI
     {
         private readonly IHtmlDocument _document;
         private readonly Dictionary<Component, RenderNode> _componentRenderNodeMap = new Dictionary<Component, RenderNode>();
-        private static Type[] _platformSpecificComponentTypes = {
+        private static readonly Type[] PlatformSpecificComponentTypes = {
             typeof(DivComponent),
-            typeof(TextComponent),
         };
 
         public DomRenderer(IHtmlDocument document)
@@ -21,35 +22,84 @@ namespace DotnetUI
 
         public RenderNode Mount(Blueprint blueprint)
         {
-            return IsPlatformSpecificComponent(blueprint)
-                ? MountPlatformSpecificComponent(blueprint)
-                : MountUserDefinedComponent(blueprint);
+            return blueprint switch
+            {
+                ComponentBlueprint componentBlueprint =>
+                    IsPlatformSpecificComponent(componentBlueprint)
+                        ? MountPlatformSpecificComponent(componentBlueprint)
+                        : MountUserDefinedComponent(componentBlueprint),
+                ValueBlueprint valueBlueprint =>
+                    MountValueBlueprint(valueBlueprint),
+                _ =>
+                    throw new Exception($"Unknown Blueprint Type {blueprint.GetType()}"),
+            };
         }
 
-        private RenderNode MountPlatformSpecificComponent(Blueprint blueprint)
+        private RenderNode WrapWithSpan(RenderNode renderNode)
         {
-            var componentInstance = Instanticate(blueprint);
-            var renderNode = new RenderNode(blueprint, componentInstance);
+            const string tag = "span";
+
+            var element = _document.CreateElement(tag);
+
+            element.ChildNodes.Add(renderNode.Node);
+            
+            renderNode.Node = element;
+
+            return renderNode;
+        }
+
+        private RenderNode MountValueBlueprint(ValueBlueprint valueBlueprint)
+        {
+            var renderNode = new ValueRenderNode(valueBlueprint);
+
+            if (!(valueBlueprint.Value is string)
+                && valueBlueprint.Value is IEnumerable enumerable)
+            {
+                foreach (var child in enumerable)
+                {
+                    var childBlueprint = child is ComponentBlueprint componentBlueprint
+                        ? (Blueprint) componentBlueprint
+                        : new ValueBlueprint(child);
+
+                    var childNode = Mount(childBlueprint);
+
+                    if (childNode.Node is IHtmlTextNode)
+                    {
+                        childNode = WrapWithSpan(childNode);
+                    }
+
+                    renderNode.Children.Add(childNode);
+                }
+
+                return renderNode;
+            }
+
+            var element = _document.CreateTextNode(valueBlueprint.Value.ToString());
+            renderNode.Node = element;
+
+            return renderNode;
+        }
+
+        private RenderNode MountPlatformSpecificComponent(ComponentBlueprint componentBlueprint)
+        {
+            var componentInstance = Instanticate(componentBlueprint);
+            var renderNode = new ComponentRenderNode(componentInstance);
             _componentRenderNodeMap[componentInstance] = renderNode;
 
-            if (blueprint.ComponentType == typeof(DivComponent))
+            if (componentBlueprint.ComponentType == typeof(DivComponent))
             {
-                return MountDivComponent(blueprint, renderNode);
-            }
-            if (blueprint.ComponentType == typeof(TextComponent))
-            {
-                return MountTextComponent(blueprint, renderNode);
+                return MountDivComponent(componentBlueprint, renderNode);
             }
             throw new NotImplementedException();
         }
 
-        private RenderNode MountDivComponent(Blueprint blueprint, RenderNode renderNode)
+        private RenderNode MountDivComponent(ComponentBlueprint componentBlueprint, RenderNode renderNode)
         {
             const string tag = "div";
 
             var element = _document.CreateElement(tag);
 
-            var props = (DivComponentProps)blueprint.Props;
+            var props = (DivComponentProps)componentBlueprint.Props;
 
             if (props.Style != default)
             {
@@ -67,7 +117,11 @@ namespace DotnetUI
                 {
                     var childNode = Mount(child);
                     renderNode.Children.Add(childNode);
-                    element.AppendChild(childNode.RootNode);
+
+                    foreach (var childNodeRootNode in childNode.RootNodes)
+                    {
+                        element.AppendChild(childNodeRootNode);
+                    }
                 }
             }
 
@@ -76,21 +130,11 @@ namespace DotnetUI
             return renderNode;
         }
 
-        private RenderNode MountTextComponent(Blueprint blueprint, RenderNode renderNode)
+        private RenderNode MountUserDefinedComponent(ComponentBlueprint componentBlueprint)
         {
-            var props = (TextComponentProps)blueprint.Props;
-            var textNode = _document.CreateTextNode(props.Text);
+            var componentInstance = Instanticate(componentBlueprint);
 
-            renderNode.Node = textNode;
-
-            return renderNode;
-        }
-
-        private RenderNode MountUserDefinedComponent(Blueprint blueprint)
-        {
-            var componentInstance = Instanticate(blueprint);
-
-            var renderNode = new RenderNode(blueprint, componentInstance);
+            var renderNode = new ComponentRenderNode(componentInstance);
             _componentRenderNodeMap[componentInstance] = renderNode;
 
             // TODO : call componentInstance.ComponentDidMount()
@@ -100,26 +144,26 @@ namespace DotnetUI
             renderNode.Children.Add(nextRenderNode);
             return renderNode;
         }
-        private Component Instanticate(Blueprint blueprint)
+        private Component Instanticate(ComponentBlueprint componentBlueprint)
         {
             var component = (Component) Activator
-                .CreateInstance(blueprint.ComponentType, blueprint.Props);
+                .CreateInstance(componentBlueprint.ComponentType, componentBlueprint.Props);
 
             component.Updater = this;
 
             return component;
         }
 
-        private static bool IsPlatformSpecificComponent(Blueprint blueprint)
+        private static bool IsPlatformSpecificComponent(ComponentBlueprint componentBlueprint)
         {
-            return _platformSpecificComponentTypes.Contains(blueprint.ComponentType);
+            return PlatformSpecificComponentTypes.Contains(componentBlueprint.ComponentType);
         }
 
         public void CommitUpdate(Component component)
         {
             var renderNode = _componentRenderNodeMap[component];
 
-            var nextBlueprint = renderNode.Component.Render();
+            var nextBlueprint = renderNode.Render();
 
             renderNode.Children.Clear();
 

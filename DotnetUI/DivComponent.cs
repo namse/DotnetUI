@@ -3,7 +3,7 @@ using System;
 
 namespace DotnetUI
 {
-    public struct DivComponentProps : DefaultComponentProps
+    public struct DivComponentProps : IDefaultComponentProps
     {
         public string Id { get; set; }
         public Blueprint[] Children { get; set; }

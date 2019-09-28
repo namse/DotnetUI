@@ -13,20 +13,27 @@ namespace DotnetUI.tests
 
         private SyntaxNode ConvertCsxNodeSyntaxToExpression(CsxNodeSyntax node)
         {
-            switch (node)
+            return node switch
             {
-                case CsxTagElementSyntax csxTagElement:
-                    return ConvertCsxTagElementSyntaxToExpression(csxTagElement);
-                case CsxTextNodeSyntax csxTextNode:
-                    return ConvertCsxTextNodeToExpression(csxTextNode);
-                default:
-                    throw new Exception($"Unknown csx node kind {node.Kind()}");
-            }
+                CsxTagElementSyntax csxTagElement =>
+                    ConvertCsxTagElementSyntaxToExpression(csxTagElement),
+                CsxTextNodeSyntax csxTextNode =>
+                    ConvertCsxTextNodeToExpression(csxTextNode),
+                CsxBraceNodeSyntax csxBraceNode =>
+                    ConvertCsxBraceNodeToExpression(csxBraceNode),
+                _ => throw new Exception($"Unknown csx node kind {node.Kind()}"),
+            };
+        }
+
+        private SyntaxNode ConvertCsxBraceNodeToExpression(CsxBraceNodeSyntax csxBraceNode)
+        {
+            var csxRewriter = new CsxRewriter();
+            return csxRewriter.Visit(csxBraceNode.Expression);
         }
 
         private SyntaxNode ConvertCsxTextNodeToExpression(CsxTextNodeSyntax csxTextNode)
         {
-            return SyntaxFactory.ParseExpression($"Blueprint.From<TextComponent, TextComponentProps>(new TextComponentProps{{Text={csxTextNode.Text}}})");
+            return SyntaxFactory.ParseExpression($"{csxTextNode.Text}");
         }
 
         private SyntaxNode ConvertCsxTagElementSyntaxToExpression(CsxTagElementSyntax csxTagElement)
@@ -48,14 +55,14 @@ namespace DotnetUI.tests
                 var childrenCode = string.Join(",", openCloseTagElement.Children
                     .Select(ConvertCsxNodeSyntaxToExpression));
                 var childrenString =
-                    $"Children=new []{{{childrenCode}}}";
+                    $"Children=new Blueprint[]{{{childrenCode}}}";
 
                 propsStringChunks.Add(childrenString);
             }
 
             var joinedPropsString = string.Join(", ", propsStringChunks);
 
-            return SyntaxFactory.ParseExpression($"Blueprint.From<{tagName}, {tagName}Props>(new {tagName}Props {{{joinedPropsString}}})");
+            return SyntaxFactory.ParseExpression($"ComponentBlueprint.From<{tagName}, {tagName}Props>(new {tagName}Props {{{joinedPropsString}}})");
         }
 
         public override SyntaxNode VisitCsxSelfClosingTagElement(CsxSelfClosingTagElementSyntax node) =>

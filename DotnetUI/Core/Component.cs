@@ -11,19 +11,19 @@ namespace DotnetUI.Core
 
     public abstract class PlatformSpecificComponent<TProps>
         : Component<TProps>, IPlatformSpecificComponent
-         where TProps : DefaultComponentProps
+         where TProps : IDefaultComponentProps
     {
         protected PlatformSpecificComponent(TProps props)
             : base(props)
         {
         }
 
-        public sealed override Blueprint Render()
+        public sealed override ComponentBlueprint Render()
         {
             throw new System.NotImplementedException();
         }
     }
-    public interface DefaultComponentProps
+    public interface IDefaultComponentProps
     {
         Blueprint[] Children { get; }
     }
@@ -33,20 +33,20 @@ namespace DotnetUI.Core
 
     }
 
-    public interface IComponentWithProps<TProps> where TProps : DefaultComponentProps
+    public interface IComponentWithProps<TProps> where TProps : IDefaultComponentProps
     { }
 
     public abstract class Component
     {
-        public readonly DefaultComponentProps Props;
+        public readonly IDefaultComponentProps Props;
         public IUpdater Updater;
 
-        protected Component(DefaultComponentProps props)
+        protected Component(IDefaultComponentProps props)
         {
             Props = props;
         }
 
-        public abstract Blueprint Render();
+        public abstract ComponentBlueprint Render();
         
         protected void CommitState()
         {
@@ -56,7 +56,7 @@ namespace DotnetUI.Core
 
     public abstract class Component<TProps>
         : Component, IComponentWithProps<TProps>
-        where TProps : DefaultComponentProps
+        where TProps : IDefaultComponentProps
     {
         protected new readonly TProps Props;
         protected Component(TProps props) : base(props)
@@ -67,7 +67,7 @@ namespace DotnetUI.Core
 
     public abstract class Component<TProps, TState>
         : Component<TProps>
-        where TProps : DefaultComponentProps
+        where TProps : IDefaultComponentProps
         where TState : DefaultComponentState
     {
         protected abstract TState State { get; set; }

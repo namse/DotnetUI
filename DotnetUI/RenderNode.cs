@@ -1,22 +1,24 @@
 using DotnetUI.Core;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DotnetUI
 {
-    public class RenderNode
+    public abstract class RenderNode
     {
         public List<RenderNode> Children = new List<RenderNode>();
-        public readonly Blueprint Blueprint;
-        public readonly Component Component;
 
         public IHtmlNode Node { get; internal set; }
-        public IHtmlNode RootNode => Node ?? Children[0]?.Node;
-
-        public RenderNode(Blueprint blueprint, Component component)
+        public IHtmlNode[] RootNodes
         {
-            Blueprint = blueprint;
-            Component = component;
+            get
+            {
+                return Node is null
+                    ? Children.SelectMany(child => child.RootNodes).ToArray()
+                    : new[] { Node };
+            }
         }
 
+        public abstract Blueprint Render();
     }
 }

@@ -6,7 +6,6 @@ namespace DotnetUI
 {
     public interface IHtmlNode
     {
-
     }
     public interface IHtmlTextNode: IHtmlNode
     {

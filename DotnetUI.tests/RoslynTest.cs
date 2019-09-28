@@ -36,7 +36,7 @@ namespace DotnetUI.tests
             var rewriter = new CsxRewriter();
             var result = rewriter.Visit(root);
 
-            var expected = RoslynTestHelper.GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {})");
+            var expected = RoslynTestHelper.GenerateCodeForExpression(@"ComponentBlueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {})");
 
             Assert.AreEqual(expected, result.ToFullString());
         }
@@ -51,7 +51,7 @@ namespace DotnetUI.tests
             var rewriter = new CsxRewriter();
             var result = rewriter.Visit(root);
 
-            var expected = RoslynTestHelper.GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {})");
+            var expected = RoslynTestHelper.GenerateCodeForExpression(@"ComponentBlueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {})");
 
             Assert.AreEqual(expected, result.ToFullString());
         }
@@ -66,7 +66,7 @@ namespace DotnetUI.tests
             var rewriter = new CsxRewriter();
             var result = rewriter.Visit(root);
 
-            var expected = RoslynTestHelper.GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc""})");
+            var expected = RoslynTestHelper.GenerateCodeForExpression(@"ComponentBlueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc""})");
 
             Assert.AreEqual(expected, result.ToFullString());
         }
@@ -81,7 +81,7 @@ namespace DotnetUI.tests
             var rewriter = new CsxRewriter();
             var result = rewriter.Visit(root);
 
-            var expected = RoslynTestHelper.GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc""})");
+            var expected = RoslynTestHelper.GenerateCodeForExpression(@"ComponentBlueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc""})");
 
             Assert.AreEqual(expected, result.ToFullString());
         }
@@ -96,7 +96,7 @@ namespace DotnetUI.tests
             var rewriter = new CsxRewriter();
             var result = rewriter.Visit(root);
 
-            var expected = RoslynTestHelper.GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc"",ClassName=""clicked""})");
+            var expected = RoslynTestHelper.GenerateCodeForExpression(@"ComponentBlueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc"",ClassName=""clicked""})");
 
             Assert.AreEqual(expected, result.ToFullString());
         }
@@ -111,7 +111,7 @@ namespace DotnetUI.tests
             var rewriter = new CsxRewriter();
             var result = rewriter.Visit(root);
 
-            var expected = RoslynTestHelper.GenerateCodeForExpression(@"Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc"",ClassName=""clicked""})");
+            var expected = RoslynTestHelper.GenerateCodeForExpression(@"ComponentBlueprint.From<MyComponent, MyComponentProps>(new MyComponentProps {Id=""abc"",ClassName=""clicked""})");
 
             Assert.AreEqual(expected, result.ToFullString());
         }

@@ -13,17 +13,17 @@ namespace DotnetUI.tests
         {
             // <div>"abc"</div>
 
-            var rootBlueprint = Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
+            var rootBlueprint = ComponentBlueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
             {
-                Children = new[]
+                Children = new Blueprint[]
                 {
-                    Blueprint.From<TextComponent, TextComponentProps>(new TextComponentProps {Text="abc"}),
+                    new ValueBlueprint("abc"),
                 },
             });
 
             var document = new TestHtmlDocument();
             var renderer = new DomRenderer(document);
-            var htmlElement = renderer.Mount(rootBlueprint).RootNode;
+            var htmlElement = renderer.Mount(rootBlueprint).RootNodes[0];
 
             var expected = @"<div>abc</div>";
             Assert.AreEqual(htmlElement.ToString(), expected);

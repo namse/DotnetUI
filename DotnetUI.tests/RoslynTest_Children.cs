@@ -89,8 +89,8 @@ namespace DotnetUI.tests
                 var result = rewriter.Visit(root);
 
                 compiledCode = i == 0
-                    ? $@"Blueprint.From<{tagName}, {tagName}Props>(new {tagName}Props {{Id=""{id}""}})"
-                    : $@"Blueprint.From<{tagName}, {tagName}Props>(new {tagName}Props {{Id=""{id}"", Children=new []{{{compiledCode}}}}})";
+                    ? $@"ComponentBlueprint.From<{tagName}, {tagName}Props>(new {tagName}Props {{Id=""{id}""}})"
+                    : $@"ComponentBlueprint.From<{tagName}, {tagName}Props>(new {tagName}Props {{Id=""{id}"", Children=new Blueprint[]{{{compiledCode}}}}})";
 
                 var expected = RoslynTestHelper.GenerateCodeForExpression(compiledCode);
 
@@ -104,7 +104,7 @@ namespace DotnetUI.tests
             var child = SyntaxFactory.CsxTextNode(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.StringLiteralExpression,
-                        SyntaxFactory.ParseToken("\"textChild\"")));  
+                        SyntaxFactory.ParseToken("\"textChild\"")));
 
             var parent = SyntaxFactory.CsxOpenCloseTagElement(
                 SyntaxFactory.IdentifierName("Parent"),
@@ -129,7 +129,7 @@ namespace DotnetUI.tests
             var rewriter = new CsxRewriter();
             var result = rewriter.Visit(root);
 
-            var expected = RoslynTestHelper.GenerateCodeForExpression(@"Blueprint.From<Parent, ParentProps>(new ParentProps {Children=new []{Blueprint.From<TextComponent, TextComponentProps>(new TextComponentProps{Text=""textChild""})}})");
+            var expected = RoslynTestHelper.GenerateCodeForExpression(@"ComponentBlueprint.From<Parent, ParentProps>(new ParentProps {Children=new Blueprint[]{""textChild""}})");
 
             Assert.AreEqual(expected, result.ToFullString());
         }
@@ -170,7 +170,7 @@ namespace DotnetUI.tests
             var rewriter = new CsxRewriter();
             var result = rewriter.Visit(root);
 
-            var expected = RoslynTestHelper.GenerateCodeForExpression(@"Blueprint.From<Parent, ParentProps>(new ParentProps {Children=new []{Blueprint.From<TextComponent, TextComponentProps>(new TextComponentProps{Text=""abc""}),Blueprint.From<Child, ChildProps>(new ChildProps {}),Blueprint.From<TextComponent, TextComponentProps>(new TextComponentProps{Text=""def""}),Blueprint.From<TextComponent, TextComponentProps>(new TextComponentProps{Text=""123""}),Blueprint.From<Child, ChildProps>(new ChildProps {})}})");
+            var expected = RoslynTestHelper.GenerateCodeForExpression(@"ComponentBlueprint.From<Parent, ParentProps>(new ParentProps {Children=new Blueprint[]{""abc"",ComponentBlueprint.From<Child, ChildProps>(new ChildProps {}),""def"",""123"",ComponentBlueprint.From<Child, ChildProps>(new ChildProps {})}})");
 
             Assert.AreEqual(expected, result.ToFullString());
         }

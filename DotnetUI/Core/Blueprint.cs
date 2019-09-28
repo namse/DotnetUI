@@ -1,16 +1,21 @@
 using System;
+using System.Collections;
 
 namespace DotnetUI.Core
 {
-    public partial class Blueprint
+    public abstract class Blueprint
     {
-        public readonly Type ComponentType;
-        public readonly DefaultComponentProps Props;
+        public static implicit operator Blueprint(string value) => new ValueBlueprint(value);
 
-        public Blueprint(Type componentType, DefaultComponentProps props)
-        {
-            ComponentType = componentType;
-            Props = props;
-        }
+        public static implicit operator Blueprint(short value) => new ValueBlueprint(value);
+        public static implicit operator Blueprint(int value) => new ValueBlueprint(value);
+        public static implicit operator Blueprint(long value) => new ValueBlueprint(value);
+        public static implicit operator Blueprint(float value) => new ValueBlueprint(value);
+        public static implicit operator Blueprint(double value) => new ValueBlueprint(value);
+
+        public static implicit operator Blueprint(bool value) => new ValueBlueprint(value);
+
+        public static implicit operator Blueprint(object[] value) => new ValueBlueprint(value);
+        public static implicit operator Blueprint(IEnumerable[] value) => new ValueBlueprint(value);
     }
 }

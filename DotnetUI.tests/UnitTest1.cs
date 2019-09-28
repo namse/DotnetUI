@@ -15,12 +15,12 @@ namespace DotnetUI.tests
             //   <div style="2"></div>
             // </div>
 
-            var rootBlueprint = Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
+            var rootBlueprint = ComponentBlueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
             {
                 Style = "1",
-                Children = new[]
+                Children=new Blueprint[]
                 {
-                    Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
+                    ComponentBlueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
                     {
                         Style = "2"
                     }),
@@ -29,7 +29,7 @@ namespace DotnetUI.tests
 
             var document = new TestHtmlDocument();
             var renderer = new DomRenderer(document);
-            var htmlElement = renderer.Mount(rootBlueprint).RootNode;
+            var htmlElement = renderer.Mount(rootBlueprint).RootNodes[0];
 
             var expected = "<div style=\"1\"><div style=\"2\"></div></div>";
             Assert.AreEqual(htmlElement.ToString(), expected);
@@ -46,13 +46,13 @@ namespace DotnetUI.tests
             //   <div style="2"></div>
             // </div>
 
-            var rootBlueprint = Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps
+            var rootBlueprint = ComponentBlueprint.From<MyComponent, MyComponentProps>(new MyComponentProps
             {
                 Style = "1",
                 Id = "first",
-                Children = new[]
+                Children=new Blueprint[]
                 {
-                    Blueprint.From<MyComponent, MyComponentProps>(new MyComponentProps
+                    ComponentBlueprint.From<MyComponent, MyComponentProps>(new MyComponentProps
                     {
                         Style = "2",
                         Id = "second",
@@ -66,12 +66,12 @@ namespace DotnetUI.tests
             var renderNode = renderer.Mount(rootBlueprint);
 
             var expected = "<div style=\"1\"><div style=\"2\"></div></div>";
-            Assert.AreEqual(renderNode.RootNode.ToString(), expected);
+            Assert.AreEqual(renderNode.RootNodes[0].ToString(), expected);
 
             MyComponent.Click("first");
 
             expected = "<div style=\"1 clicked\"><div style=\"2\"></div></div>";
-            Assert.AreEqual(renderNode.RootNode.ToString(), expected);
+            Assert.AreEqual(renderNode.RootNodes[0].ToString(), expected);
         }
     }
 }

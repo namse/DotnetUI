@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DotnetUI
 {
-    public struct MyComponentProps : DefaultComponentProps
+    public struct MyComponentProps : IDefaultComponentProps
     {
         public string Style { get; set; }
         public string Id { get; set; }
@@ -40,13 +40,13 @@ namespace DotnetUI
             State.IsClicked = true;
             CommitState();
         }
-        public override Blueprint Render()
+        public override ComponentBlueprint Render()
         {
             var style = State.IsClicked
                 ? $"{Props.Style} clicked"
                 : Props.Style;
 
-            return Blueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
+            return ComponentBlueprint.From<DivComponent, DivComponentProps>(new DivComponentProps
             {
                 Style = style,
                 Children = Props.Children,
