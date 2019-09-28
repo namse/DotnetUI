@@ -1,5 +1,5 @@
 # DotnetUI
-.csx file (React in C#) => WebAssemly
+.csx file (React in C#) => WebAssembly
 
 Simply saying, it's React in C#. React use jsx. DotnetUI use csx. CSX file is CSharp file but we can use xml syntax like <MyComponent>.
 
