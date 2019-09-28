@@ -101,7 +101,7 @@ namespace DotnetUI.tests
 
         public IHtmlNode CreateTextNode(string text)
         {
-            throw new NotImplementedException();
+            return new TestHtmlTextNode(text);
         }
     }
 }

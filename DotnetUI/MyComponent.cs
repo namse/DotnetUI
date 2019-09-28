@@ -13,7 +13,7 @@ namespace DotnetUI
 
     public class MyComponentState : DefaultComponentState
     {
-        public bool isClicked { get; set; }
+        public bool IsClicked { get; set; }
     }
     public class MyComponent : Component<MyComponentProps, MyComponentState>
     {
@@ -27,7 +27,7 @@ namespace DotnetUI
 
         protected override MyComponentState State { get; set; } = new MyComponentState
         {
-            isClicked = false,
+            IsClicked = false,
         };
 
         public static void Click(string id)
@@ -37,12 +37,12 @@ namespace DotnetUI
 
         public void OnClick()
         {
-            State.isClicked = true;
+            State.IsClicked = true;
             CommitState();
         }
         public override Blueprint Render()
         {
-            var style = State.isClicked
+            var style = State.IsClicked
                 ? $"{Props.Style} clicked"
                 : Props.Style;
 

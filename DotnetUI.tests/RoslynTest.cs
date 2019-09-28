@@ -20,7 +20,7 @@ namespace DotnetUI.tests
         {
             var csxSelfClosingTagElement = SyntaxFactory.CsxOpenCloseTagElement(
                 "MyComponent",
-                SyntaxFactory.CsxCloseTagElement("MyComponent"));
+                SyntaxFactory.CsxCloseTag("MyComponent"));
 
             var csxCodeBlock = @"<MyComponent></MyComponent>";
             Assert.AreEqual(csxSelfClosingTagElement.ToFullString(), csxCodeBlock);

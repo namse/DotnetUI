@@ -29,7 +29,7 @@ namespace DotnetUI.tests
 
             var document = new TestHtmlDocument();
             var renderer = new DomRenderer(document);
-            var htmlElement = renderer.Mount(rootBlueprint).RootElement;
+            var htmlElement = renderer.Mount(rootBlueprint).RootNode;
 
             var expected = "<div style=\"1\"><div style=\"2\"></div></div>";
             Assert.AreEqual(htmlElement.ToString(), expected);
@@ -66,12 +66,12 @@ namespace DotnetUI.tests
             var renderNode = renderer.Mount(rootBlueprint);
 
             var expected = "<div style=\"1\"><div style=\"2\"></div></div>";
-            Assert.AreEqual(renderNode.RootElement.ToString(), expected);
+            Assert.AreEqual(renderNode.RootNode.ToString(), expected);
 
             MyComponent.Click("first");
 
             expected = "<div style=\"1 clicked\"><div style=\"2\"></div></div>";
-            Assert.AreEqual(renderNode.RootElement.ToString(), expected);
+            Assert.AreEqual(renderNode.RootNode.ToString(), expected);
         }
     }
 }

@@ -11,6 +11,24 @@ namespace DotnetUI.tests
     {
         public CsxRewriter() : base(true) { }
 
+        private SyntaxNode ConvertCsxNodeSyntaxToExpression(CsxNodeSyntax node)
+        {
+            switch (node)
+            {
+                case CsxTagElementSyntax csxTagElement:
+                    return ConvertCsxTagElementSyntaxToExpression(csxTagElement);
+                case CsxTextNodeSyntax csxTextNode:
+                    return ConvertCsxTextNodeToExpression(csxTextNode);
+                default:
+                    throw new Exception($"Unknown csx node kind {node.Kind()}");
+            }
+        }
+
+        private SyntaxNode ConvertCsxTextNodeToExpression(CsxTextNodeSyntax csxTextNode)
+        {
+            return SyntaxFactory.ParseExpression($"Blueprint.From<TextComponent, TextComponentProps>(new TextComponentProps{{Text={csxTextNode.Text}}})");
+        }
+
         private SyntaxNode ConvertCsxTagElementSyntaxToExpression(CsxTagElementSyntax csxTagElement)
         {
             var tagName = csxTagElement.TagName;
@@ -27,9 +45,10 @@ namespace DotnetUI.tests
             if (csxTagElement is CsxOpenCloseTagElementSyntax openCloseTagElement
                 && openCloseTagElement.Children.Count > 0)
             {
-                // new [] { adsf, asdf, asdf}
+                var childrenCode = string.Join(",", openCloseTagElement.Children
+                    .Select(ConvertCsxNodeSyntaxToExpression));
                 var childrenString =
-                    $"Children=new []{{{string.Join(",", openCloseTagElement.Children.Select(ConvertCsxTagElementSyntaxToExpression))}}}";
+                    $"Children=new []{{{childrenCode}}}";
 
                 propsStringChunks.Add(childrenString);
             }

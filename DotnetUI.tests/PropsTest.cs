@@ -82,7 +82,7 @@ namespace DotnetUI.tests
             var renderNode = renderer.Mount(rootBlueprint);
 
             var expected = "<div id=\"1\"></div>";
-            Assert.AreEqual(renderNode.RootElement.ToString(), expected);
+            Assert.AreEqual(renderNode.RootNode.ToString(), expected);
 
             var childrenString = "";
             for (var i = 0; i < 10; i += 1)
@@ -91,7 +91,7 @@ namespace DotnetUI.tests
 
                 childrenString += $"<div id=\"1-{i + 1}\"></div>";
                 expected = $"<div id=\"1\">{childrenString}</div>";
-                Assert.AreEqual(renderNode.RootElement.ToString(), expected);
+                Assert.AreEqual(renderNode.RootNode.ToString(), expected);
             }
         }
     }

@@ -1,6 +1,7 @@
 using DotnetUI.Core;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DotnetUI
 {
@@ -8,6 +9,10 @@ namespace DotnetUI
     {
         private readonly IHtmlDocument _document;
         private readonly Dictionary<Component, RenderNode> _componentRenderNodeMap = new Dictionary<Component, RenderNode>();
+        private static Type[] _platformSpecificComponentTypes = {
+            typeof(DivComponent),
+            typeof(TextComponent),
+        };
 
         public DomRenderer(IHtmlDocument document)
         {
@@ -30,6 +35,10 @@ namespace DotnetUI
             if (blueprint.ComponentType == typeof(DivComponent))
             {
                 return MountDivComponent(blueprint, renderNode);
+            }
+            if (blueprint.ComponentType == typeof(TextComponent))
+            {
+                return MountTextComponent(blueprint, renderNode);
             }
             throw new NotImplementedException();
         }
@@ -58,11 +67,21 @@ namespace DotnetUI
                 {
                     var childNode = Mount(child);
                     renderNode.Children.Add(childNode);
-                    element.AppendChild((IHtmlElement)childNode.RootElement);
+                    element.AppendChild(childNode.RootNode);
                 }
             }
 
-            renderNode.Element = element;
+            renderNode.Node = element;
+
+            return renderNode;
+        }
+
+        private RenderNode MountTextComponent(Blueprint blueprint, RenderNode renderNode)
+        {
+            var props = (TextComponentProps)blueprint.Props;
+            var textNode = _document.CreateTextNode(props.Text);
+
+            renderNode.Node = textNode;
 
             return renderNode;
         }
@@ -93,11 +112,7 @@ namespace DotnetUI
 
         private static bool IsPlatformSpecificComponent(Blueprint blueprint)
         {
-            if (blueprint.ComponentType == typeof(DivComponent))
-            {
-                return true;
-            }
-            return false;
+            return _platformSpecificComponentTypes.Contains(blueprint.ComponentType);
         }
 
         public void CommitUpdate(Component component)

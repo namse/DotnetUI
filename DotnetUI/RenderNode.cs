@@ -9,9 +9,8 @@ namespace DotnetUI
         public readonly Blueprint Blueprint;
         public readonly Component Component;
 
-        // TODO : HMM?
-        public object Element { get; internal set; }
-        public object RootElement => Element ?? Children[0]?.Element;
+        public IHtmlNode Node { get; internal set; }
+        public IHtmlNode RootNode => Node ?? Children[0]?.Node;
 
         public RenderNode(Blueprint blueprint, Component component)
         {
