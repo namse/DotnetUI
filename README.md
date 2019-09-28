@@ -9,9 +9,9 @@ Simply saying, it's React in C#. React use jsx. DotnetUI use csx. CSX file is CS
   - roslyn-csx/build-csx.ps1
 - Run sln and enjoy
 
-# I'm Workig In Process for Prototype
+# I'm Working In Process for Prototype
 - [x] Implement Component Managing System like React
-  - No Reconcilation for prototype! Just redraw everything on changes.
+  - No Reconciliation for prototype! Just redraw everything on changes.
   - [x] Redraw on state changed
   - [x] Redraw on props changed
 - [ ] Implement Csx Compiler (https://github.com/namse/roslyn-csx)
