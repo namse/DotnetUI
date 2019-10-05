@@ -36,6 +36,17 @@ namespace DotnetUI.tests
             return SyntaxFactory.ParseExpression($"{csxTextNode.Text}");
         }
 
+        private string ConvertAttributesToString(SyntaxList<CsxAttributeSyntax> attributes)
+        {
+            return string.Join(',', attributes
+                .Select(attribute => attribute switch
+                    {
+                        CsxStringAttributeSyntax stringAttribute => $"{stringAttribute.Key}={stringAttribute.Value}",
+                        CsxBraceAttributeSyntax braceAttribute => $"{braceAttribute.Key}={braceAttribute.Value}",
+                        _ => throw new Exception("Unknown attribute syntax"),
+                    }));
+        }
+
         private SyntaxNode ConvertCsxTagElementSyntaxToExpression(CsxTagElementSyntax csxTagElement)
         {
             var tagName = csxTagElement.TagName;
@@ -44,8 +55,7 @@ namespace DotnetUI.tests
             var propsStringChunks = new List<string>();
             if (attributes != default)
             {
-                var attributeString = string.Join(',', attributes
-                    .Select(attribute => $"{attribute.Key}={attribute.Value}"));
+                var attributeString = ConvertAttributesToString(attributes);
                 propsStringChunks.Add(attributeString);
             }
 
@@ -60,7 +70,7 @@ namespace DotnetUI.tests
                 propsStringChunks.Add(childrenString);
             }
 
-            var joinedPropsString = string.Join(", ", propsStringChunks);
+            var joinedPropsString = string.Join(",", propsStringChunks);
 
             return SyntaxFactory.ParseExpression($"ComponentBlueprint.From<{tagName}, {tagName}Props>(new {tagName}Props {{{joinedPropsString}}})");
         }

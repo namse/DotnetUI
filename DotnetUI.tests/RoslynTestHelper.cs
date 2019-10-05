@@ -7,6 +7,7 @@ using System.Runtime;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DotnetUI.tests
 {
@@ -73,6 +74,16 @@ namespace Test
             var method = testClass.GetMethod("Func");
             var returnValue = method.Invoke(null, null);
             return (T)returnValue;
+        }
+
+
+
+        public static CsxTextNodeSyntax GenerateCsxTextNode(string text)
+        {
+            return SyntaxFactory.CsxTextNode(
+                SyntaxFactory.LiteralExpression(
+                    SyntaxKind.StringLiteralExpression,
+                    SyntaxFactory.ParseToken($"\"{text}\"")));
         }
     }
 }

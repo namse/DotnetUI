@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace DotnetUI.tests
 {
     [TestClass]
-    public class BraceNodeTest
+    public class RoslynTest_BraceNodeTest
     {
         [TestMethod]
         public void TestBraceNodeChild_string()
@@ -17,8 +17,8 @@ namespace DotnetUI.tests
             });
 
             var parent = SyntaxFactory.CsxOpenCloseTagElement(
-                SyntaxFactory.IdentifierName("DivComponent"),
-                SyntaxFactory.List<CsxStringAttributeSyntax>(),
+                SyntaxFactory.Identifier("DivComponent"),
+                SyntaxFactory.List<CsxAttributeSyntax>(),
                 children,
                 SyntaxFactory.CsxCloseTag("DivComponent"));
 
@@ -53,8 +53,8 @@ namespace DotnetUI.tests
             });
 
             var parent = SyntaxFactory.CsxOpenCloseTagElement(
-                SyntaxFactory.IdentifierName("DivComponent"),
-                SyntaxFactory.List<CsxStringAttributeSyntax>(),
+                SyntaxFactory.Identifier("DivComponent"),
+                SyntaxFactory.List<CsxAttributeSyntax>(),
                 children,
                 SyntaxFactory.CsxCloseTag("DivComponent"));
 
@@ -91,8 +91,8 @@ namespace DotnetUI.tests
             });
 
             var parent = SyntaxFactory.CsxOpenCloseTagElement(
-                SyntaxFactory.IdentifierName("DivComponent"),
-                SyntaxFactory.List<CsxStringAttributeSyntax>(),
+                SyntaxFactory.Identifier("DivComponent"),
+                SyntaxFactory.List<CsxAttributeSyntax>(),
                 children,
                 SyntaxFactory.CsxCloseTag("DivComponent"));
 
@@ -127,8 +127,8 @@ namespace DotnetUI.tests
             });
 
             var parent = SyntaxFactory.CsxOpenCloseTagElement(
-                SyntaxFactory.IdentifierName("DivComponent"),
-                SyntaxFactory.List<CsxStringAttributeSyntax>(),
+                SyntaxFactory.Identifier("DivComponent"),
+                SyntaxFactory.List<CsxAttributeSyntax>(),
                 children,
                 SyntaxFactory.CsxCloseTag("DivComponent"));
 
@@ -162,8 +162,8 @@ namespace DotnetUI.tests
             });
 
             var parent = SyntaxFactory.CsxOpenCloseTagElement(
-                SyntaxFactory.IdentifierName("DivComponent"),
-                SyntaxFactory.List<CsxStringAttributeSyntax>(),
+                SyntaxFactory.Identifier("DivComponent"),
+                SyntaxFactory.List<CsxAttributeSyntax>(),
                 children,
                 SyntaxFactory.CsxCloseTag("DivComponent"));
 
@@ -198,8 +198,8 @@ namespace DotnetUI.tests
             });
 
             var parent = SyntaxFactory.CsxOpenCloseTagElement(
-                SyntaxFactory.IdentifierName("DivComponent"),
-                SyntaxFactory.List<CsxStringAttributeSyntax>(),
+                SyntaxFactory.Identifier("DivComponent"),
+                SyntaxFactory.List<CsxAttributeSyntax>(),
                 children,
                 SyntaxFactory.CsxCloseTag("DivComponent"));
 

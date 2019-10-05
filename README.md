@@ -14,16 +14,16 @@ Simply saying, it's React in C#. React use jsx. DotnetUI use csx. CSX file is CS
   - No Reconciliation for prototype! Just redraw everything on changes.
   - [x] Redraw on state changed
   - [x] Redraw on props changed
-- [ ] Implement Csx Compiler (https://github.com/namse/roslyn-csx)
+- [x] Implement Csx Compiler (https://github.com/namse/roslyn-csx)
   - [x] Self Closing Tag Element `<tag />`
   - [x] Open Close Tag Element `<tag></tag>`
   - [x] Parse Children `<tag>{{here}}</tag>`
     - [x] Element Children `<tag><tag></tag></tag>`
     - [x] Text Children `<tag>"hi"</tag>`
     - [x] C# Expression Children `<tag>{$"hello {name}"}</tag>`
-  - [ ] Attributes(Props)
+  - [x] Attributes(Props)
     - [x] String Attributes `<tag att="hello" />`
-    - [ ] C# Expression Attribute `<tag att={$"hello {name}"} />`
+    - [x] C# Expression Attribute `<tag att={$"hello {name}"} />`
 - [ ] Create compile tool from csx to wasm
   - [ ] .csx => .cs
   - [ ] .cs => .wasm (using mono)
